@@ -226,7 +226,7 @@ func (r *Resolver) Messages(ctx context.Context, channelID primitive.ObjectID) (
 			}
 
 			me := auth.For(ctx)
-			if !me.Channel.Public && (me == nil || (me.Role < structures.GlobalRoleStaff && me.MemberRole(channel.ID) < structures.ChannelRoleViewer)) {
+			if !channel.Channel.Public && (me == nil || (me.Role < structures.GlobalRoleStaff && me.MemberRole(channel.ID) < structures.ChannelRoleViewer)) {
 				return
 			}
 
