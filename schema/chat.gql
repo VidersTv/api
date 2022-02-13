@@ -1,0 +1,30 @@
+type ChatMessage {
+  id: ObjectID!
+  user_id: ObjectID!
+  channel_id: ObjectID!
+  content: String!
+  emotes: [ChatMessageEmote!]!
+
+  channel: User @goField(forceResolver: true)
+  user: User @goField(forceResolver: true)
+}
+
+type ChatMessageEmote {
+  id: ObjectID!
+  channel_id: ObjectID!
+  tag: String!
+
+  emote: UserChannelEmote @goField(forceResolver: true)
+}
+
+extend type Query {
+  chatters(channel_id: ObjectID!, page: Int!, limit: Int!): [User!]
+}
+
+extend type Subscription {
+  messages(channel_id: ObjectID!): ChatMessage
+}
+
+extend type Mutation {
+  send_message(channel_id: ObjectID!, content: String!): ChatMessage
+}

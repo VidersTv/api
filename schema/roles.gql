@@ -1,0 +1,10 @@
+directive @hasRole(
+  role: GlobalRole!
+) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+enum GlobalRole {
+  User
+  Streamer
+  Staff
+  Owner
+}

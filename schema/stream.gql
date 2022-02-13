@@ -1,0 +1,24 @@
+type Stream {
+  id: ObjectID!
+  user_id: ObjectID!
+  title: String!
+  started_at: Time!
+  ended_at: Time
+
+  variants: [StreamVariant!]
+
+  user: User @goField(forceResolver: true)
+  access_token: String @goField(forceResolver: true)
+}
+
+type StreamVariant {
+  name: String!
+  fps: Int!
+  bitrate: Int!
+  width: Int!
+  height: Int!
+}
+
+extend type Query {
+  viewer_count(channel_id: ObjectID!): Int
+}

@@ -1,0 +1,43 @@
+level: info
+
+redis:
+  username: default
+  master_name: mymaster
+  addresses:
+    - redis.redis.svc.cluster.local:26379
+  database: 0
+  sentinel: true
+
+mongo:
+  database: viders
+
+api:
+  bind: 0.0.0.0:9999
+
+twitch:
+  client_id:
+  client_secret:
+  login_redirect_uri: http://localhost:9999/twitch/login/callback
+
+frontend:
+  otp_url: http://localhost:9998/otp
+  error_url: http://localhost:9998/error
+  cors:
+    origins:
+      - http://localhost:9998
+      - http://localhost:9999
+  cookie:
+    secure: false
+    domain: localhost
+
+auth:
+  jwt_token: chest
+  edge_jwt_token: bat
+
+monitoring:
+  enabled: true
+  bind: :9100
+
+health:
+  enabled: true
+  bind: :9101

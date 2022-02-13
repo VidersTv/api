@@ -1,0 +1,68 @@
+type User {
+  id: ObjectID!
+  login: String!
+  display_name: String!
+  profile_picture: ObjectID
+  color: Int!
+  role: GlobalRole!
+  channel: UserChannel!
+  twitch_account: UserTwitchAccount
+  memberships: [UserMembership!]
+}
+
+type UserChannel {
+  id: ObjectID!
+  title: String!
+  public: Boolean!
+  stream_key: String
+  last_live: Time
+  twitch_role_mirror: Boolean!
+  emotes: [UserChannelEmote!]
+
+  current_stream: Stream @goField(forceResolver: true)
+}
+
+type UserChannelEmote {
+  id: ObjectID!
+  tag: String!
+  uploader_id: ObjectID!
+
+  uploader: User @goField(forceResolver: true)
+}
+
+type UserMembership {
+  channel_id: ObjectID!
+  role: ChannelRole!
+  added_by_id: ObjectID!
+
+  channel: User @goField(forceResolver: true)
+  added_by: User @goField(forceResolver: true)
+}
+
+type UserTwitchAccount {
+  id: String!
+  login: String!
+  display_name: String!
+  profile_picture: String!
+}
+
+enum ChannelRole {
+  User
+  Viewer
+  VIP
+  Editor
+  Moderator
+  Admin
+}
+
+extend type Query {
+  me: User
+  user(id: ObjectID!): User
+  user_by_login(login: String!): User
+  live_channels(page: Int!, limit: Int!): [User!]!
+}
+
+extend type Subscription {
+  me: User
+  user(id: ObjectID!): User
+}
