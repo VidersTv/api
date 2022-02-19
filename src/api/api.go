@@ -28,7 +28,6 @@ func New(gCtx global.Context) <-chan struct{} {
 				auth := strings.TrimPrefix(auth, "Bearer ")
 				login := structures.JwtLogin{}
 				if err := structures.DecodeJwt(&login, gCtx.Config().Auth.JwtToken, auth); err != nil {
-					logrus.Error("err: ", err)
 					goto handler
 				}
 

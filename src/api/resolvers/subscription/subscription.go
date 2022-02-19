@@ -121,7 +121,12 @@ func (r *Resolver) User(ctx context.Context, id primitive.ObjectID) (<-chan *mod
 	}()
 
 	go func() {
-		defer cancel()
+		defer func() {
+			cancel()
+			if err := recover(); err != nil {
+				logrus.Error("panic recovered: ", err)
+			}
+		}()
 
 		for range subCh {
 			usrs, errs := loaders.For(ctx).UserLoader.LoadAll(ids)
@@ -137,6 +142,12 @@ func (r *Resolver) User(ctx context.Context, id primitive.ObjectID) (<-chan *mod
 			var me *structures.User
 			if len(usrs) == 2 {
 				me = &usrs[1]
+			}
+
+			select {
+			case <-ctx.Done():
+				return
+			default:
 			}
 
 			ch <- modelstructures.User(usrs[0]).ToModel(me)
@@ -212,7 +223,12 @@ func (r *Resolver) Messages(ctx context.Context, channelID primitive.ObjectID) (
 	}
 
 	go func() {
-		defer cancel()
+		defer func() {
+			cancel()
+			if err := recover(); err != nil {
+				logrus.Error("panic recovered: ", err)
+			}
+		}()
 
 		for msg := range subCh {
 			channel, err := loaders.For(ctx).UserLoader.Load(channelID)
@@ -235,6 +251,12 @@ func (r *Resolver) Messages(ctx context.Context, channelID primitive.ObjectID) (
 			if err := json.UnmarshalFromString(msg, &dbMsg); err != nil {
 				logrus.Error("failed to decode msg: ", err)
 				continue
+			}
+
+			select {
+			case <-ctx.Done():
+				return
+			default:
 			}
 
 			ch <- modelstructures.Message(dbMsg).ToModel()
